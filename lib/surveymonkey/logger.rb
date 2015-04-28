@@ -1,7 +1,5 @@
 require "log4r"
 
-module Surveymonkey
-  class Logger
-    extend Log4r
-  end
+class Surveymonkey::Logger
+  extend Log4r
 end
