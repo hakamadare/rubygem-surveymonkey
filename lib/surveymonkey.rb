@@ -5,15 +5,20 @@ module Surveymonkey
   autoload :Client, 'surveymonkey/client'
   autoload :Version, 'surveymonkey/version'
 
-  # configure logging
   include Log4r
+
+  # Constants
+
+  # initialize logging
+  $log = Logger.new('surveymonkey')
+  # FIXME make this configurable
+  Loglevel = ERROR
+
   begin
-    $log = Logger.new('surveymonkey')
+    # configure logging
     $log.outputters = Outputter.stderr
 
-    # FIXME make log level configurable
-    $log.level = DEBUG
-    # $log.level = INFO
+    $log.level = Loglevel
     $log.debug("Configured logging to stderr.")
   rescue Exception => e
     $stderr.puts("Unable to configure logging: #{e.message}")
