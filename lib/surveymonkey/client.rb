@@ -8,12 +8,11 @@ class Surveymonkey::Client
 
   # Constants
   Baseurl = 'https://api.surveymonkey.net'
-  Apiversion = '2'
 
   Endpoints = {
-    :get_survey_list => {
-      :method => 'get',
-      :path   => '/surveys/get_survey_list',
+    'get_survey_list' => {
+      'method' => 'post',
+      'path'   => '/v2/surveys/get_survey_list',
     },
   }
 
@@ -24,23 +23,17 @@ class Surveymonkey::Client
     $log.debug("endpoint: #{endpoint}")
 
     begin
-      path = endpoints[:endpoint][:path]
+      path = endpoints[endpoint]['path']
       $log.debug("path: #{path}")
-      method = endpoints[:endpoint][:method]
+      method = endpoints[endpoint]['method']
       $log.debug("method: #{method}")
 
       url = URI.join(self.url, path)
       $log.debug("url: #{url.to_s}")
 
-      payload = {
-        :content_type => 'application/json',
-        :Authorization => "Bearer #{self.accesstoken}",
-        :params => {:api_key => self.apikey},
-      }
-      $log.debug("payload: #{payload.inspect}")
-
       # make the request
-      self.send(method.to_sym, url.to_s, payload)
+      self.send(method.to_sym, url.to_s, :params => {:api_key => self.apikey}, :content_type => :json)
+      #self.send(method.to_sym, url.to_s, :params => {:api_key => self.apikey}, :headers => {:Authorization => "Bearer #{self.accesstoken}"}, :content_type => :json, :accept => :json})
 
     rescue Exception => e
       $log.error("Unable to build request URL: #{e.message}")
@@ -66,21 +59,20 @@ class Surveymonkey::Client
   # Private methods
   private
 
-  def initialize(apikey, accesstoken, baseurl = Baseurl, apiversion = Apiversion)
+  def initialize(apikey, accesstoken, baseurl = Baseurl)
     @baseurl     = baseurl
-    @apiversion  = apiversion
     @apikey      = apikey
     @accesstoken = accesstoken
 
     $log.debug("baseurl: #{baseurl}")
-    $log.debug("apiversion: #{apiversion}")
     $log.debug("apikey: #{apikey}")
     $log.debug("apikey: #{accesstoken}")
 
     begin
-      $log.debug("Building API URL")
-      @url = URI("#{baseurl}/v#{apiversion}")
+      @url = URI(baseurl)
       $log.debug("url: #{@url.to_s}")
+
+      RestClient.log = $log
     rescue Exception => e
       $log.error("Unable to build API URL: #{e.message}")
       raise

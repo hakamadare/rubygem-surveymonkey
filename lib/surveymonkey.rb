@@ -41,8 +41,11 @@ module Surveymonkey
 
     # Public methods
     def get_survey_list
+      $log.debug("Entering get_survey_list")
       begin
         client = _client
+
+        response = _client.api_request('get_survey_list')
       rescue Exception => e
         $log.error(e.message)
         raise
