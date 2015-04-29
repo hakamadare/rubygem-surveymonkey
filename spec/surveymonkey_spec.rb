@@ -6,14 +6,22 @@ describe Surveymonkey do
   end
 end
 
-# describe Surveymonkey::Config.new() do
-#   it { is_expected.to have_attributes(:baseurl    => 'https://api.surveymonkey.com') }
-#   it { is_expected.to have_attributes(:apiversion => '2') }
-#   it { is_expected.to have_attributes(:apiurl     => 'https://api.surveymonkey.com/v2') }
-# end
-
 describe Surveymonkey::Client do
   it 'is a RestClient' do
     expect(Surveymonkey::Client).to be_kind_of(RestClient)
+  end
+
+  it { is_expected.to respond_to(:get) }
+  it { is_expected.to respond_to(:put) }
+  it { is_expected.to respond_to(:post) }
+  it { is_expected.to respond_to(:delete) }
+end
+
+describe Surveymonkey::Client.new() do
+  it { is_expected.to respond_to(:url) }
+
+  it 'has the correct default URL' do
+    expect(Surveymonkey::Client.new.url).to be_kind_of(URI)
+    expect(Surveymonkey::Client.new.url.to_s).to match('https://api.surveymonkey.net/v2')
   end
 end
