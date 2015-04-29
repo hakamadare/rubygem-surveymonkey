@@ -7,8 +7,6 @@ module Surveymonkey
 
   include Log4r
 
-  # Constants
-
   # initialize logging
   $log = Logger.new('surveymonkey')
   # FIXME make this configurable
@@ -24,4 +22,34 @@ module Surveymonkey
     $stderr.puts("Unable to configure logging: #{e.message}")
     raise
   end
+
+  class << self
+    # Constants
+    begin
+      Apikey      = ENV.fetch('SURVEYMONKEY_APIKEY')
+      Accesstoken = ENV.fetch('SURVEYMONKEY_ACCESSTOKEN')
+    rescue IndexError => e
+      $log.fatal("Missing API credential")
+      $log.fatal(e.message)
+      raise
+    rescue Exception => e
+      $log.fatal(e.message)
+      raise
+    end
+
+    # Public methods
+
+    # Private methods
+    private
+
+    def _client
+      begin
+        @client = Surveymonkey::Client.new(apikey = Apikey, accesstoken = Accesstoken)
+      rescue Exception => e
+        $log.fatal("Unable to initialize REST client: #{e.message}")
+        raise
+      end
+    end
+  end
+
 end
