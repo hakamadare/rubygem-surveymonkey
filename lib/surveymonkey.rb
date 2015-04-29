@@ -1,11 +1,21 @@
-require "surveymonkey/version"
+require "log4r"
+require "rest-client"
 
 module Surveymonkey
-  autoload :Config, 'surveymonkey/config'
   autoload :Client, 'surveymonkey/client'
-  autoload :Logger, 'surveymonkey/logger'
+  autoload :Version, 'surveymonkey/version'
 
-  def config
-    Surveymonkey::Config.new()
+  # configure logging
+  include Log4r
+  begin
+    $log = Logger.new('surveymonkey')
+    $log.outputters = Outputter.stderr
+
+    # FIXME make log level configurable
+    $log.level = INFO
+    $log.debug("Configured logging to stderr.")
+  rescue Exception => e
+    $stderr.puts("Unable to configure logging: #{e.message}")
+    raise
   end
 end

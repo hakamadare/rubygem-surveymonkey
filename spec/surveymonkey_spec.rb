@@ -6,17 +6,12 @@ describe Surveymonkey do
   end
 end
 
-describe Surveymonkey::Config.new() do
-  it { is_expected.to have_attributes(:baseurl    => 'https://api.surveymonkey.com') }
-  it { is_expected.to have_attributes(:apiversion => '2') }
-  it { is_expected.to have_attributes(:apiurl     => 'https://api.surveymonkey.com/v2') }
-end
+# describe Surveymonkey::Config.new() do
+#   it { is_expected.to have_attributes(:baseurl    => 'https://api.surveymonkey.com') }
+#   it { is_expected.to have_attributes(:apiversion => '2') }
+#   it { is_expected.to have_attributes(:apiurl     => 'https://api.surveymonkey.com/v2') }
+# end
 
-describe Surveymonkey::Logger do
-  it 'is a Log4r' do
-    expect(Surveymonkey::Logger).to be_kind_of(Log4r)
-  end
-end
 describe Surveymonkey::Client do
   it 'is a RestClient' do
     expect(Surveymonkey::Client).to be_kind_of(RestClient)
