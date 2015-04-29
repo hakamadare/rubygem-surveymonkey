@@ -1,20 +1,22 @@
-require "log4r"
+require "logging"
 require "rest-client"
 
-module Surveymonkey
-  autoload :Client, 'surveymonkey/client'
-  autoload :Version, 'surveymonkey/version'
+require "surveymonkey/version"
 
-  include Log4r
+module Surveymonkey
+  autoload :Client, "surveymonkey/client"
 
   # initialize logging
-  $log = Logger.new('surveymonkey')
   # FIXME make this configurable
-  Loglevel = ERROR
+  if ENV.member?('SURVEYMONKEY_LOGLEVEL')
+    Loglevel = ENV['SURVEYMONKEY_LOGLEVEL'].to_sym
+  else
+    Loglevel = :error
+  end
 
   begin
     # configure logging
-    $log.outputters = Outputter.stderr
+    $log = Logging.logger(STDERR)
 
     $log.level = Loglevel
     $log.debug("Configured logging to stderr.")
@@ -38,6 +40,14 @@ module Surveymonkey
     end
 
     # Public methods
+    def get_survey_list
+      begin
+        client = _client
+      rescue Exception => e
+        $log.error(e.message)
+        raise
+      end
+    end
 
     # Private methods
     private

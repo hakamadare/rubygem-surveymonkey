@@ -74,6 +74,8 @@ class Surveymonkey::Client
 
     $log.debug("baseurl: #{baseurl}")
     $log.debug("apiversion: #{apiversion}")
+    $log.debug("apikey: #{apikey}")
+    $log.debug("apikey: #{accesstoken}")
 
     begin
       $log.debug("Building API URL")
