@@ -12,7 +12,8 @@ module Surveymonkey
     $log.outputters = Outputter.stderr
 
     # FIXME make log level configurable
-    $log.level = INFO
+    $log.level = DEBUG
+    # $log.level = INFO
     $log.debug("Configured logging to stderr.")
   rescue Exception => e
     $stderr.puts("Unable to configure logging: #{e.message}")
