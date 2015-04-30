@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["shuff@vecna.org"]
 
   spec.summary       = %q{Client for SurveyMonkey REST API}
-  spec.description   = %q{Use rest-client to interact with SurveyMonkey's REST API.  Requires an API token.}
+  spec.description   = %q{Interact with SurveyMonkey's REST API.  Requires an API token.}
   spec.homepage      = "http://developer.surveymonkey.com/"
   spec.license       = "MIT"
 
@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 2.4"
 
-  spec.add_runtime_dependency "rest-client", "~> 1.8"
+  spec.add_runtime_dependency "httparty", "~> 0.13"
+  spec.add_runtime_dependency "json", "~> 1.8"
   spec.add_runtime_dependency "logging", "~> 2"
 end

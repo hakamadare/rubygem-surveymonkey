@@ -39,7 +39,7 @@ module Surveymonkey
 
     def _client
       begin
-        @client = Surveymonkey::Client.new(apikey = Apikey, accesstoken = Accesstoken)
+        @client = Surveymonkey::Client.new(Apikey, Accesstoken)
       rescue Exception => e
         $log.fatal("Unable to initialize REST client: #{e.message}")
         raise
