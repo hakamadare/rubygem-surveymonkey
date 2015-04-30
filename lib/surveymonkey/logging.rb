@@ -10,14 +10,15 @@ module Surveymonkey::Logging
     # configure logging
     Logging.color_scheme( 'bright',
       :levels => {
+        :debug => :grey,
         :info  => :green,
-        :warn  => :yellow,
+        :warn  => :orange,
         :error => :red,
         :fatal => [:white, :on_red]
       },
       :date => :blue,
       :logger => :cyan,
-      :message => :magenta
+      :message => :yellow
     )
 
     Logging.appenders.stderr(
