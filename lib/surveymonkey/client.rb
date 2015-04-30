@@ -17,7 +17,7 @@ class Surveymonkey::Client
   }
 
   # Public methods
-  attr_reader :url, :apikey, :accesstoken
+  attr_reader :url, :apikey, :accesstoken, :apiresource
 
   def api_request(endpoint, endpoints = Endpoints)
     $log.debug("endpoint: #{endpoint}")
@@ -28,11 +28,14 @@ class Surveymonkey::Client
       method = endpoints[endpoint]['method']
       $log.debug("method: #{method}")
 
-      url = URI.join(self.url, path)
-      $log.debug("url: #{url.to_s}")
+      # build the request
+      $log.info("Building #{method} request for #{path}...")
+      resource = self.resource
+      $log.debug(resource.inspect)
 
+      resource.send(method.to_sym, path)
       # make the request
-      self.send(method.to_sym, url.to_s, :params => {:api_key => self.apikey}, :content_type => :json)
+      # self.send(method.to_sym, url.to_s, :params => {:api_key => self.apikey}, :content_type => :json)
       #self.send(method.to_sym, url.to_s, :params => {:api_key => self.apikey}, :headers => {:Authorization => "Bearer #{self.accesstoken}"}, :content_type => :json, :accept => :json})
 
     rescue Exception => e
@@ -73,8 +76,29 @@ class Surveymonkey::Client
       $log.debug("url: #{@url.to_s}")
 
       RestClient.log = $log
+
+      @apiresource = _apiresource
+
     rescue Exception => e
-      $log.error("Unable to build API URL: #{e.message}")
+      $log.error("Unable to initialize API client: #{e.message}")
+      raise
+    end
+  end
+
+  def _apiresource
+    begin
+      url         = self.url
+      apikey      = self.apikey
+      accesstoken = self.accesstoken
+
+      $log.info("Building API resource...")
+      resource = RestClient::Resource.new(url, :api_key => apikey, :headers => { :authorization => "bearer #{accesstoken}", :content_type => 'application/json' })
+      $log.debug(resource.inspect)
+
+      resource
+
+    rescue Exception => e
+      $log.error("Unable to build API resource: #{e.message}")
       raise
     end
   end

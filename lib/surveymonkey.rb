@@ -2,28 +2,10 @@ require "logging"
 require "rest-client"
 
 require "surveymonkey/version"
+require "surveymonkey/logging"
 
 module Surveymonkey
   autoload :Client, "surveymonkey/client"
-
-  # initialize logging
-  # FIXME make this configurable
-  if ENV.member?('SURVEYMONKEY_LOGLEVEL')
-    Loglevel = ENV['SURVEYMONKEY_LOGLEVEL'].to_sym
-  else
-    Loglevel = :error
-  end
-
-  begin
-    # configure logging
-    $log = Logging.logger(STDERR)
-
-    $log.level = Loglevel
-    $log.debug("Configured logging to stderr.")
-  rescue Exception => e
-    $stderr.puts("Unable to configure logging: #{e.message}")
-    raise
-  end
 
   class << self
     # Constants

@@ -16,7 +16,7 @@ describe Surveymonkey::Client.new(apikey = ENV['SURVEYMONKEY_APIKEY'], accesstok
   it { is_expected.to respond_to(:url) }
   it { is_expected.to respond_to(:apikey) }
   it { is_expected.to respond_to(:accesstoken) }
-  it { is_expected.to respond_to(:api_request) }
+  it { is_expected.to respond_to(:apiresource) }
 
   it 'has the correct default URL' do
     expect(Surveymonkey::Client.new(apikey = ENV['SURVEYMONKEY_APIKEY'], accesstoken = ENV['SURVEYMONKEY_ACCESSTOKEN']).url).to be_kind_of(URI)
