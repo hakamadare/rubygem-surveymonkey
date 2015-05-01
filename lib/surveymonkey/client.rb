@@ -11,11 +11,41 @@ class Surveymonkey::Client
 
   # constants
   Baseuri = 'https://api.surveymonkey.net'
+
   Api_methods = {
+    'create_flow' => {
+      'path'   => '/v2/batch/create_flow',
+    },
+    'send_flow' => {
+      'path'   => '/v2/batch/send_flow',
+    },
+    'create_collector' => {
+      'path'   => '/v2/collectors/create_collector',
+    },
     'get_survey_list' => {
       'path'   => '/v2/surveys/get_survey_list',
-      'method' => 'post',
-    }
+    },
+    'get_survey_details' => {
+      'path'   => '/v2/surveys/get_survey_details',
+    },
+    'get_collector_list' => {
+      'path'   => '/v2/surveys/get_collector_list',
+    },
+    'get_respondent_list' => {
+      'path'   => '/v2/surveys/get_respondent_list',
+    },
+    'get_responses' => {
+      'path'   => '/v2/surveys/get_responses',
+    },
+    'get_response_counts' => {
+      'path'   => '/v2/surveys/get_response_counts',
+    },
+    'get_template_list' => {
+      'path'   => '/v2/templates/get_template_list',
+    },
+    'get_user_details' => {
+      'path'   => '/v2/user/get_user_details',
+    },
   }
 
   # public methods
@@ -31,7 +61,7 @@ class Surveymonkey::Client
 
       path        = the_api_method.fetch('path')
 
-      http_method = the_api_method.fetch('method', 'get')
+      http_method = the_api_method.fetch('method', 'post')
 
       $log.debug(sprintf("%s: %s '%s' '%s'\n", __method__, http_method, path, body))
 
@@ -49,6 +79,9 @@ class Surveymonkey::Client
 
       response.parsed_response
 
+    rescue KeyError => e
+      $log.error(sprintf("%s: no such method '%s': %s\n", __method__, http_method, e.message))
+      raise e
     rescue Exception => e
       $log.error(sprintf("%s: %s\n", __method__, e.message))
       raise
@@ -63,8 +96,7 @@ class Surveymonkey::Client
       @api_key      = param_hash.fetch('api_key', _from_env('SURVEYMONKEY_APIKEY'))
       @loglevel     = param_hash.fetch('api_key', _from_env('SURVEYMONKEY_LOGLEVEL'))
 
-      $log.debug(sprintf("%s: setting loglevel to '%s'\n", __method__, @loglevel))
-      self.class.logger $log, @loglevel.to_sym
+      self.class.logger $log, :debug
 
       $log.debug(sprintf("%s: setting base_uri to '%s'\n", __method__, @baseuri))
       self.class.base_uri @baseuri
@@ -93,6 +125,7 @@ class Surveymonkey::Client
 
     rescue KeyError => e
       $log.error(sprintf("%s: '%s' not found in api methods\n", __method__, key))
+      raise e
     rescue Exception => e
       $log.error(sprintf("%s: %s\n", __method__, e.message))
       raise
@@ -117,6 +150,7 @@ class Surveymonkey::Client
 
   def _api_method_params(method_params)
     begin
+      # TODO validate params against API spec
       $log.debug(sprintf("%s: parsing api method params from '%s'\n", __method__, method_params))
       the_params = JSON.generate(method_params || {}).to_s
       $log.debug(sprintf("%s: parsed method params '%s'\n", __method__, the_params))
