@@ -6,20 +6,14 @@ describe Surveymonkey do
   end
 end
 
-describe Surveymonkey::Client do
-  it 'is a RestClient' do
-    expect(Surveymonkey::Client).to be_kind_of(RestClient)
-  end
-end
-
-describe Surveymonkey::Client.new(apikey = ENV['SURVEYMONKEY_APIKEY'], accesstoken = ENV['SURVEYMONKEY_ACCESSTOKEN']) do
-  it { is_expected.to respond_to(:url) }
-  it { is_expected.to respond_to(:apikey) }
-  it { is_expected.to respond_to(:accesstoken) }
-  it { is_expected.to respond_to(:apiresource) }
+describe Surveymonkey::Client.new() do
+  it { is_expected.to respond_to(:baseuri) }
+  it { is_expected.to respond_to(:access_token) }
+  it { is_expected.to respond_to(:api_key) }
+  it { is_expected.to respond_to(:loglevel) }
+  it { is_expected.to respond_to(:api_call) }
 
   it 'has the correct default URL' do
-    expect(Surveymonkey::Client.new(apikey = ENV['SURVEYMONKEY_APIKEY'], accesstoken = ENV['SURVEYMONKEY_ACCESSTOKEN']).url).to be_kind_of(URI)
-    expect(Surveymonkey::Client.new(apikey = ENV['SURVEYMONKEY_APIKEY'], accesstoken = ENV['SURVEYMONKEY_ACCESSTOKEN']).url.to_s).to match('https://api.surveymonkey.net')
+    expect(Surveymonkey::Client.new().baseuri).to match('https://api.surveymonkey.net')
   end
 end

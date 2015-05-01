@@ -9,88 +9,149 @@ class Surveymonkey::Client
 
   $log.debug("Defined Surveymonkey::Client.")
 
-  # Constants
-  Baseurl = 'https://api.surveymonkey.net'
-
-  Endpoints = {
+  # constants
+  Baseuri = 'https://api.surveymonkey.net'
+  Api_methods = {
     'get_survey_list' => {
-      'method' => 'post',
       'path'   => '/v2/surveys/get_survey_list',
-    },
+      'method' => 'post',
+    }
   }
 
-  # Public methods
-  attr_reader :url, :apikey, :accesstoken, :apiresource
+  # public methods
+  attr_reader :baseuri, :access_token, :api_key, :loglevel
 
-  def api_request(endpoint, endpoints = Endpoints)
-    $log.debug("endpoint: #{endpoint}")
-
+  def api_call(api_method, method_params = {}, api_key = self.api_key, access_token = self.access_token)
     begin
-      path = endpoints[endpoint]['path']
-      $log.debug("path: #{path}")
+      $log.debug(sprintf("%s: calling '%s'\n", __method__, api_method))
 
-      method = endpoints[endpoint]['method']
-      $log.debug("method: #{method}")
+      the_api_method = _api_method(api_method)
 
-      params = "?api_key=#{apikey}"
+      body        = _api_method_params(method_params)
 
-      # build the request
-      $log.info("Building #{method} request for #{path}...")
+      path        = the_api_method.fetch('path')
 
-      request_url = URI.join(self.baseurl, path, params).to_s
-      $log.debug(request_url)
+      http_method = the_api_method.fetch('method', 'get')
 
-      # make the request
-      $log.debug(self.class.public_methods)
-      self.class.post request_url, @options
+      $log.debug(sprintf("%s: %s '%s' '%s'\n", __method__, http_method, path, body))
+
+      http_headers = _http_headers(access_token)
+      $log.debug(sprintf("%s: http_headers: '%s'\n", __method__, http_headers.inspect))
+
+      request_uri = _request_uri(path, api_key)
+
+      $log.debug(sprintf("%s: ready to make request for '%s'\n", __method__, api_method))
+      response = self.class.send(http_method.to_sym, request_uri, body: body, headers: http_headers)
+
+      $log.debug(sprintf("%s: response class %s\n", __method__, response.class))
+      $log.debug(sprintf("%s: response code %i\n", __method__, response.code))
+      $log.debug(sprintf("%s: response headers '%s'\n", __method__, response.headers.inspect))
+
+      response.parsed_response
 
     rescue Exception => e
-      $log.error("Unable to build request URL: #{e.message}")
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
       raise
     end
   end
 
-  # Private methods
+  def initialize(*args)
+    begin
+      param_hash = args.shift || {}
+      @baseuri      = param_hash.fetch('baseuri', Baseuri)
+      @access_token = param_hash.fetch('access_token', _from_env('SURVEYMONKEY_ACCESSTOKEN'))
+      @api_key      = param_hash.fetch('api_key', _from_env('SURVEYMONKEY_APIKEY'))
+      @loglevel     = param_hash.fetch('api_key', _from_env('SURVEYMONKEY_LOGLEVEL'))
+
+      $log.debug(sprintf("%s: setting loglevel to '%s'\n", __method__, @loglevel))
+      self.class.logger $log, @loglevel.to_sym
+
+      $log.debug(sprintf("%s: setting base_uri to '%s'\n", __method__, @baseuri))
+      self.class.base_uri @baseuri
+
+      $log.debug(sprintf("%s: setting headers'\n", __method__))
+      the_headers = {
+        "Content-Type"  => "application/json",
+        "Authorization" => sprintf("bearer %s", @access_token),
+      }
+      self.class.headers the_headers
+    rescue Exception => e
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
+      raise
+    end
+  end
+
+  # private methods
   private
 
-  def initialize(apikey, accesstoken, baseurl = Baseurl)
-    @baseurl     = baseurl
-    @apikey      = apikey
-    @accesstoken = accesstoken
-
-    $log.debug("baseurl: #{baseurl}")
-    $log.debug("apikey: #{apikey}")
-    $log.debug("accesstoken: #{accesstoken}")
-
+  def _api_method(key, api_methods = Api_methods)
     begin
-      self.class.logger $log, :debug, :curl
+      $log.debug(sprintf("%s: fetching '%s' from api methods\n", __method__, key))
+      value = api_methods.fetch(key)
+      $log.debug(sprintf("%s: retrieved '%s'\n", __method__, value.inspect))
+      value
 
-      @headers = {
-        "Content-Type"  => "application/json",
-        "Authorization" => "bearer #{accesstoken}",
-      }
-      self.class.headers @headers
-
+    rescue KeyError => e
+      $log.error(sprintf("%s: '%s' not found in api methods\n", __method__, key))
     rescue Exception => e
-      $log.error("Unable to initialize API client: #{e.message}")
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
       raise
     end
   end
 
-  def _apiresource
+  def _http_headers(token)
     begin
-      url         = self.url.to_s
-      apikey      = self.apikey
-      accesstoken = self.accesstoken
-
-      $log.info("Building API resource...")
-      resource = RestClient::Resource.new(url, :api_key => apikey, :accept => 'application/json', :headers => { :authorization => "bearer #{accesstoken}" })
-      $log.debug(resource.inspect)
-
-      resource
+      $log.debug(sprintf("%s: constructing http headers with token '%s'\n", __method__, token))
+      http_headers = {
+        "Content-Type" => "application/json",
+        "Authorization" => sprintf("bearer %s", token),
+      }
+      $log.debug(sprintf("%s: http headers: '%s'\n", __method__, http_headers))
+      http_headers
 
     rescue Exception => e
-      $log.error("Unable to build API resource: #{e.message}")
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
+      raise
+    end
+  end
+
+  def _api_method_params(method_params)
+    begin
+      $log.debug(sprintf("%s: parsing api method params from '%s'\n", __method__, method_params))
+      the_params = JSON.generate(method_params || {}).to_s
+      $log.debug(sprintf("%s: parsed method params '%s'\n", __method__, the_params))
+      the_params
+
+    rescue Exception => e
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
+      raise
+    end
+  end
+
+  def _request_uri(path, api_key)
+    begin
+      $log.debug(sprintf("%s: generating request uri fragment from '%s' and '%s'\n", __method__, path, api_key))
+      request_uri = sprintf("%s?api_key=%s", path, api_key)
+      $log.debug(sprintf("%s: generated '%s'\n", __method__, request_uri))
+      request_uri
+
+    rescue Exception => e
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
+      raise
+    end
+  end
+
+  def _from_env(key)
+    begin
+      $log.debug(sprintf("%s: fetching '%s' from environment\n", __method__, key))
+      value = ENV.fetch(key)
+      $log.debug(sprintf("%s: retrieved '%s'\n", __method__, value))
+      value
+
+    rescue KeyError => e
+      $log.info(sprintf("%s: '%s' not found in environment\n", __method__, key))
+    rescue Exception => e
+      $log.error(sprintf("%s: %s\n", __method__, e.message))
       raise
     end
   end
