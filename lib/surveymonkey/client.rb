@@ -1,6 +1,5 @@
 require "httparty"
 require "json"
-require "uri"
 
 require "surveymonkey/logging"
 

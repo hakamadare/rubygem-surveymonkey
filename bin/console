@@ -1,14 +1,16 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
+
+# set API credentials in env
+ENV['SURVEYMONKEY_APIKEY'] = 'aaaaaabbbbbbccccccdddddd' unless ENV.member?('SURVEYMONKEY_APIKEY')
+ENV['SURVEYMONKEY_ACCESSTOKEN'] = 'aaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbb' unless ENV.member?('SURVEYMONKEY_ACCESSTOKEN')
+
 require "surveymonkey"
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
 
 # (If you use this, don't forget to add pry to your Gemfile!)
-# require "pry"
-# Pry.start
-
-require "irb"
-IRB.start
+require "pry"
+Pry.start
