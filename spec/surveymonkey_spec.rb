@@ -10,7 +10,6 @@ describe Surveymonkey::Client.new() do
   it { is_expected.to respond_to(:baseuri) }
   it { is_expected.to respond_to(:access_token) }
   it { is_expected.to respond_to(:api_key) }
-  it { is_expected.to respond_to(:loglevel) }
   it { is_expected.to respond_to(:api_call) }
 
   it 'has the correct default URL' do

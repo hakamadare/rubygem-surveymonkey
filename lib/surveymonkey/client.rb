@@ -48,7 +48,8 @@ class Surveymonkey::Client
   }
 
   # public methods
-  attr_reader :baseuri, :access_token, :api_key, :loglevel
+  attr_reader :baseuri, :api_key
+  attr_accessor :access_token
 
   def api_call(api_method, method_params = {}, api_key = self.api_key, access_token = self.access_token)
     begin
@@ -93,7 +94,6 @@ class Surveymonkey::Client
       @baseuri      = param_hash.fetch('baseuri', Baseuri)
       @access_token = param_hash.fetch('access_token', _from_env('SURVEYMONKEY_ACCESSTOKEN'))
       @api_key      = param_hash.fetch('api_key', _from_env('SURVEYMONKEY_APIKEY'))
-      @loglevel     = param_hash.fetch('api_key', _from_env('SURVEYMONKEY_LOGLEVEL'))
 
       self.class.logger $log, :debug
 
