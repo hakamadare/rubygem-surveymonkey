@@ -2,9 +2,9 @@ require "logging"
 
 require "surveymonkey/version"
 require "surveymonkey/logging"
+require "surveymonkey/request"
 
 module Surveymonkey
-  autoload :Client, "surveymonkey/client"
 
   class << self
     # Constants
@@ -15,17 +15,19 @@ module Surveymonkey
         $log.debug(sprintf("%s: %s\n", __method__, 'enter'))
 
         method_params = Hash(Array(args).shift) || {}
+        $log.debug(sprintf("%s: method_params: %s\n", __method__, method_params.inspect))
 
-        response = _client.send(:api_call, method_name.to_s, method_params)
+        request = Surveymonkey::Request.new(method_name.to_s, method_params)
+        response = request.execute
         response
 
       rescue TypeError => e
-        $log.fatal(sprintf("%s: method parameters must be a hash\n"))
+        $log.fatal(sprintf("%s: method parameters must be a hash\n", __method__))
         exit 1
       rescue KeyError => e
-        $log.fatal(sprintf("%s: method '%s' not implemented\n"))
+        $log.fatal(sprintf("%s: method '%s' not implemented\n", __method__, method_name.to_s))
         exit 1
-      rescue Exception => e
+      rescue StandardError => e
         $log.error(sprintf("%s: %s\n", __method__, e.message))
         raise
       end
@@ -34,15 +36,5 @@ module Surveymonkey
     # Private methods
     private
 
-    def _client
-      begin
-        @client = Surveymonkey::Client.new()
-      rescue Exception => e
-        $log.fatal(sprintf("%s: %s\n", "Unable to initialize REST client", e.message))
-        $log.debug(sprintf("%s: %s\n", __method__, e.message))
-        raise
-      end
-    end
   end
-
 end

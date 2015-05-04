@@ -1,4 +1,4 @@
-# Surveymonkey [![Build Status](https://travis-ci.org/hakamadare/rubygem-surveymonkey.svg?branch=master)](https://travis-ci.org/hakamadare/rubygem-surveymonkey)
+# Surveymonkey [![Build Status](https://travis-ci.org/hakamadare/rubygem-surveymonkey.svg?branch=master)](https://travis-ci.org/hakamadare/rubygem-surveymonkey) [![Gem Version](https://badge.fury.io/rb/surveymonkey.svg)](http://badge.fury.io/rb/surveymonkey)
 
 This is a client for the SurveyMonkey [RESTful API](http://developer.surveymonkey.com).
 
@@ -50,9 +50,9 @@ The SurveyMonkey API methods are documented [here](https://developer.surveymonke
     {"username"=>"XXXXXX", "is_paid_account"=>true, "is_enterprise_user"=>false}}}
 ```
 
-To pass parameters to an API method, pass a hash like so:
+To pass parameters to an API method, pass a hash as the `method_params` parameter like so:
 ```ruby
-[2] pry(main)> Surveymonkey.get_survey_list({"page_size" => 5, "order_asc" => true})
+[2] pry(main)> Surveymonkey.get_survey_list('method_params' => {"page_size" => 5, "order_asc" => true})
 => {"status"=>0,
  "data"=>
   {"surveys"=>
