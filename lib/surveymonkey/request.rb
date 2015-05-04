@@ -54,7 +54,7 @@ class Surveymonkey::Request
         @api_method = api.api_method(api_method)
 
         # extract optional params
-        param_hash = Hash(args.shift) || {}
+        param_hash = Hash.try_convert(args.shift) || {}
         @baseuri       = param_hash.fetch('baseuri', Baseuri)
         @method_params = api.api_method_params(param_hash.fetch('method_params', {}))
         @access_token  = param_hash.fetch('access_token', _from_env('SURVEYMONKEY_ACCESSTOKEN'))
