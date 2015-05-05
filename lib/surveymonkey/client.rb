@@ -3,6 +3,9 @@ require "json"
 
 require "surveymonkey/logging"
 
+##
+# Class encapsulating the HTTParty client used to communicate with the SurveyMonkey API.
+
 class Surveymonkey::Client
   include HTTParty
 
@@ -12,6 +15,12 @@ class Surveymonkey::Client
 
   # public methods
   attr_reader :baseuri, :api_key, :access_token
+
+  ##
+  # Create a new Surveymonkey::Client object.  Requires the following parameters:
+  # * baseuri
+  # * access_token
+  # * api_key
 
   def initialize(baseuri, access_token, api_key)
     begin
@@ -37,7 +46,7 @@ class Surveymonkey::Client
   # private methods
   private
 
-  def _http_headers(token)
+  def _http_headers(token) #:nodoc:
     begin
       $log.debug(sprintf("%s: constructing http headers with token '%s'\n", __method__, token))
       http_headers = {

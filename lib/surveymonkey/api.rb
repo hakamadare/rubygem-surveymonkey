@@ -1,10 +1,16 @@
 require 'surveymonkey/logging'
 require 'json'
 
+##
+# Object representing the SurveyMonkey API.
+
 class Surveymonkey::API
   autoload :Method, 'surveymonkey/api/method'
 
   # constants
+
+  ##
+  # Hash defining the methods in the SurveyMonkey API.  Current as of 2015-05-05.
 
   Api_methods = {
     'create_flow' => {
@@ -45,6 +51,9 @@ class Surveymonkey::API
   # public methods
   attr_reader :api_methods
 
+  ##
+  # Look up a SurveyMonkey API method and return its path and associated HTTP method.
+
   def api_method(key, api_methods = self.api_methods)
     begin
       $log.debug(sprintf("%s: api methods: %s\n", __method__, api_methods.inspect))
@@ -69,6 +78,11 @@ class Surveymonkey::API
     end
   end
 
+  ##
+  # SurveyMonkey API method params need to be a JSON-encoded string; this
+  # method passes through a string and tries to turn another data type into
+  # JSON.
+
   def api_method_params(method_params)
     begin
       # TODO validate params against API spec
@@ -84,6 +98,11 @@ class Surveymonkey::API
       raise
     end
   end
+
+  ##
+  # Create a new Surveymonkey::API object.  The only parameter is an
+  # api_methods hash (use this if you want to override the definition of the
+  # SurveyMonkey API, I guess?)
 
   def initialize
     begin

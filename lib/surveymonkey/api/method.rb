@@ -1,7 +1,14 @@
 require 'surveymonkey/logging'
 
+##
+# Object representing a SurveyMonkey API method.
+
 class Surveymonkey::API::Method
   attr_reader :path, :http_method
+
+  ##
+  # Create a new method.  Does some input validation to make sure the
+  # associated HTTP method is valid.
 
   def initialize(path, http_method = 'post')
     begin

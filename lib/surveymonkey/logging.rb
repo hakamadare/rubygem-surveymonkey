@@ -1,3 +1,13 @@
+##
+# Implement logging for Surveymonkey via the Logging library.
+#
+# Logging configuration happens at runtime and is drawn from the
+# **SURVEYMONKEY_LOGLEVEL** environment variable.  Set this variable to one of
+# the standard syslog levels (debug, info, warning, error, fatal) to enable
+# more or less logging.  At present Surveymonkey logs a lot of debug messages,
+# and other than that just emits errors and fatals if it encounters problems.
+# The default loglevel is error.
+
 module Surveymonkey::Logging
   # initialize logging
   if ENV.member?('SURVEYMONKEY_LOGLEVEL')

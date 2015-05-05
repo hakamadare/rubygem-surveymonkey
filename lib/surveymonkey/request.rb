@@ -2,6 +2,9 @@ require 'surveymonkey/logging'
 require 'surveymonkey/api'
 require 'surveymonkey/client'
 
+##
+# Object representing a request to the SurveyMonkey API.  Parameters should all be populated automatically.
+
 class Surveymonkey::Request
 
   begin
@@ -13,6 +16,13 @@ class Surveymonkey::Request
     Baseuri = 'https://api.surveymonkey.net'
 
     # public methods
+
+    ##
+    # Send the HTTP request to the SurveyMonkey API and parse the response.
+    # This is an opportunity to override defaults, _e.g._ if you want to use
+    # different credentials for a specific request, or if you're sending the
+    # same request repeatedly with different parameters.
+
     def execute(method_params = self.method_params, api_method = self.api_method, api_key = self.api_key, access_token = self.access_token)
       begin
         $log.debug(sprintf("%s: enter\n", __method__))
@@ -43,6 +53,14 @@ class Surveymonkey::Request
         raise
       end
     end
+
+    ##
+    # Create a new Surveymonkey::Request object.  Takes a string representing the API method name and a hash of parameters; the relevant parameters are the following:
+    #
+    # * baseuri
+    # * method_params
+    # * access_token
+    # * api_key
 
     def initialize(api_method, *args)
       begin
@@ -75,7 +93,7 @@ class Surveymonkey::Request
     # private methods
     private
 
-    def _client
+    def _client #:nodoc:
       begin
         @client = Surveymonkey::Client.new()
       rescue StandardError => e
@@ -85,7 +103,7 @@ class Surveymonkey::Request
       end
     end
 
-    def _api
+    def _api #:nodoc:
       begin
         @api = Surveymonkey::API.new()
       rescue StandardError => e
@@ -95,7 +113,7 @@ class Surveymonkey::Request
       end
     end
 
-    def _http_headers(token)
+    def _http_headers(token) #:nodoc:
       begin
         $log.debug(sprintf("%s: constructing http headers with token '%s'\n", __method__, token))
         http_headers = {
@@ -111,7 +129,7 @@ class Surveymonkey::Request
       end
     end
 
-    def _from_env(key)
+    def _from_env(key) #:nodoc:
       begin
         $log.debug(sprintf("%s: fetching '%s' from environment\n", __method__, key))
         value = ENV.fetch(key)
@@ -126,7 +144,7 @@ class Surveymonkey::Request
       end
     end
 
-    def _request_uri(path, api_key)
+    def _request_uri(path, api_key) #:nodoc:
       begin
         $log.debug(sprintf("%s: generating request uri fragment from '%s' and '%s'\n", __method__, path, api_key))
         request_uri = sprintf("%s?api_key=%s", path, api_key)
