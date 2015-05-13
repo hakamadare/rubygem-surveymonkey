@@ -67,6 +67,8 @@ To pass parameters to an API method, pass a hash as the `method_params` paramete
 
 API method responses are parsed into Ruby data structures; do with them as you think best.
 
+SurveyMonkey API responses include a `status` attribute.  The possible values of this attribute are documented upstream; `Surveymonkey::Client` inspects each API response and raises a `Surveymonkey::Error` if the status code is other than 0.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.

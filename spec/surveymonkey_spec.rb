@@ -9,6 +9,8 @@ end
 baseuri      = 'https://api.surveymonkey.net'
 access_token = 'accesstokenaccesstoken'
 api_key      = 'apikeyapikey'
+error_hash   = {'status' => 2, 'errmsg' => 'Oh noes access denied'}
+
 describe Surveymonkey::Client.new(baseuri, 'accesstokenaccesstoken', 'apikeyapikey') do
   it { is_expected.to be_an_instance_of(Surveymonkey::Client) }
   it { is_expected.to respond_to(:baseuri) }
@@ -68,4 +70,18 @@ end
 describe Surveymonkey::API.new().api_method('get_survey_list').to_s do
   it { is_expected.to be_a_kind_of(String) }
   it { is_expected.to eq('get_survey_list') }
+end
+
+describe Surveymonkey::Error.new() do
+  it { is_expected.to be_an_instance_of(Surveymonkey::Error) }
+  it { is_expected.to respond_to(:status) }
+  it { is_expected.to respond_to(:status_name) }
+  it { is_expected.to respond_to(:errmsg) }
+end
+
+describe Surveymonkey::Error.new(error_hash) do
+  it { is_expected.to be_an_instance_of(Surveymonkey::Error) }
+  it { is_expected.to respond_to(:status) }
+  it { is_expected.to respond_to(:status_name) }
+  it { is_expected.to respond_to(:errmsg) }
 end

@@ -1,6 +1,7 @@
 require 'surveymonkey/logging'
 require 'surveymonkey/api'
 require 'surveymonkey/client'
+require 'surveymonkey/error'
 
 ##
 # Object representing a request to the SurveyMonkey API.  Parameters should all be populated automatically.
@@ -46,7 +47,15 @@ class Surveymonkey::Request
         $log.debug(sprintf("%s: response code %i\n", __method__, response.code))
         $log.debug(sprintf("%s: response headers '%s'\n", __method__, response.headers.inspect))
 
-        response.parsed_response
+        parsed = response.parsed_response
+        status = parsed.fetch('status')
+
+        if status == 0
+          parsed
+        else
+          $log.debug(sprintf("%s: API returned status %i\n", __method__, status))
+          raise Surveymonkey::Error.new(parsed)
+        end
 
       rescue StandardError => e
         $log.error(sprintf("%s: unable to execute API request: %s\n", __method__, e.message))
