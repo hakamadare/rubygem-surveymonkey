@@ -43,6 +43,13 @@ class Surveymonkey::Client
     end
   end
 
+  ##
+  # Stringify a Surveymonkey::Client object
+
+  def to_s
+    self.baseuri
+  end
+
   # private methods
   private
 

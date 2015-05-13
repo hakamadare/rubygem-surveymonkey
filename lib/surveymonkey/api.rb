@@ -10,6 +10,11 @@ class Surveymonkey::API
   # constants
 
   ##
+  # String indicated the version of the SurveyMonkey API implemented.
+
+  Api_version = 'v2'
+
+  ##
   # Hash defining the methods in the SurveyMonkey API.  Current as of 2015-05-05.
 
   Api_methods = {
@@ -49,7 +54,7 @@ class Surveymonkey::API
   }
 
   # public methods
-  attr_reader :api_methods
+  attr_reader :api_methods, :api_version
 
   ##
   # Look up a SurveyMonkey API method and return its path and associated HTTP method.
@@ -67,7 +72,7 @@ class Surveymonkey::API
       $log.debug(sprintf("%s: method '%s'\n", __method__, method))
 
       # return
-      Surveymonkey::API::Method.new(path, method)
+      Surveymonkey::API::Method.new(path, method, method_name = key)
 
     rescue KeyError => e
       $log.error(sprintf("%s: '%s' not found in api methods\n", __method__, key))
@@ -107,9 +112,18 @@ class Surveymonkey::API
   def initialize
     begin
       @api_methods = Api_methods
+      @api_version = Api_version
     rescue StandardError => e
       $log.error(sprintf("%s: %s\n", __method__, e.message))
       raise
     end
   end
+
+  ##
+  # Stringify a Surveymonkey::API object.
+
+  def to_s
+    self.api_version
+  end
+
 end

@@ -8,7 +8,7 @@ require 'surveymonkey/client'
 class Surveymonkey::Request
 
   begin
-    attr_reader :api, :api_method, :client, :path, :api_key, :baseuri
+    attr_reader :api, :api_method, :client, :path, :api_key, :baseuri, :method_name
     attr_accessor :access_token, :method_params
 
     # constants
@@ -68,6 +68,9 @@ class Surveymonkey::Request
         $log.debug(sprintf("%s: api_method: %s\n", __method__, api_method))
         $log.debug(sprintf("%s: args: %s\n", __method__, args))
 
+        # store the API method name for stringification
+        @method_name = api_method
+
         api = Surveymonkey::API.new
         @api_method = api.api_method(api_method)
 
@@ -89,6 +92,15 @@ class Surveymonkey::Request
         raise
       end
     end
+
+    ##
+    # Stringify a Surveymonkey::Request object
+    #
+
+    def to_s
+      self.method_name
+    end
+
 
     # private methods
     private
