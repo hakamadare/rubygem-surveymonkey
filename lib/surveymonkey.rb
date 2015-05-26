@@ -5,6 +5,7 @@ require "surveymonkey/version"
 require "surveymonkey/logging"
 require "surveymonkey/error"
 require "surveymonkey/request"
+require "surveymonkey/datestring"
 
 ##
 # Top-level module, holds the user-facing methods
@@ -46,7 +47,7 @@ module Surveymonkey
         page_size = the_args.delete('page_size') { |key| DefaultPageSize }.to_i
         $log.debug sprintf("%s: page_size: %i", __method__, page_size)
 
-        method_params = the_args
+        method_params = parse_datestrings(the_args)
         $log.debug sprintf("%s: method_params: %s", __method__, method_params.inspect)
 
         # is this a paginated method?
@@ -122,6 +123,31 @@ module Surveymonkey
       rescue Surveymonkey::Error => e
         $log.error sprintf("SurveyMonkey API error: %s", e.message)
         raise e
+
+      rescue StandardError => e
+        $log.error(sprintf("%s: %s", __method__, e.message))
+        raise e
+
+      end
+    end
+
+    ##
+    # Parse and validate DateStrings in method parameters
+    def parse_datestrings(method_params = {}) # :nodoc:
+      begin
+        ['start_date', 'end_date'].each do |date_param|
+          if method_params.has_key?(date_param)
+            raw = method_params.fetch(date_param)
+            $log.debug(sprintf("%s: parsing '%s' as %s param", __method__, raw, date_param))
+
+            parsed = Surveymonkey::DateString.new(raw).to_s
+            $log.debug(sprintf("%s: parsed '%s' to '%s'", __method__, raw, parsed))
+
+            method_params.store(date_param, parsed)
+          end
+        end
+
+        method_params
 
       rescue StandardError => e
         $log.error(sprintf("%s: %s", __method__, e.message))

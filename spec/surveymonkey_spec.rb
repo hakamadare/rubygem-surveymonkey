@@ -85,3 +85,23 @@ describe Surveymonkey::Error.new(error_hash) do
   it { is_expected.to respond_to(:status_name) }
   it { is_expected.to respond_to(:errmsg) }
 end
+
+describe Surveymonkey::DateString.new('2010-09-08 12:13:14') do
+  it { is_expected.to be_an_instance_of(Surveymonkey::DateString) }
+  it { is_expected.to respond_to(:raw) }
+  it { is_expected.to respond_to(:time) }
+  it { is_expected.to respond_to(:to_s) }
+  it { is_expected.to respond_to(:<=>) }
+end
+
+describe Surveymonkey::DateString.new('2010-09-08 12:13:14').to_s do
+  it { is_expected.to eq('2010-09-08 12:13:14') }
+end
+
+describe Surveymonkey::DateString.new('2010-09-08 12:13:14').raw do
+  it { is_expected.to eq('2010-09-08 12:13:14') }
+end
+
+describe Surveymonkey::DateString.new('2010-09-08 12:13:14').time do
+  it { is_expected.to be_an_instance_of(Time) }
+end
