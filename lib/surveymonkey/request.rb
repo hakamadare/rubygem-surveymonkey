@@ -47,18 +47,36 @@ class Surveymonkey::Request
         $log.debug(sprintf("%s: response code %i", __method__, response.code))
         $log.debug(sprintf("%s: response headers '%s'", __method__, response.headers.inspect))
 
-        parsed = response.parsed_response
-        status = parsed.fetch('status')
+        if response.code == 403
+          binding.pry
+        end
 
-        if status == 0
-          parsed
+        if _valid_response?(response)
+          parsed = response.parsed_response
+          status = parsed.fetch('status')
+
+          if status == 0
+            parsed
+          else
+            $log.debug(sprintf("%s: API returned status %i", __method__, status))
+            raise Surveymonkey::Error.new(parsed)
+          end
+
         else
-          $log.debug(sprintf("%s: API returned status %i", __method__, status))
-          raise Surveymonkey::Error.new(parsed)
+          $log.error sprintf("%s: API returned invalid HTTP response code from '%s'", __method__, self)
+
+          mashery_error_code  = $response.headers.fetch('x-mashery-error-code', 'UNKNOWN')
+          error_detail_header = $response.headers.fetch('x-error-detail-header', 'Unknown')
+
+          the_error = {
+            'status' => 3,
+            'errmsg' => sprintf("%s (%s)", mashery_error_code, error_detail_header)
+          }
+          raise Surveymonkey::Error.new(the_error)
         end
 
       rescue StandardError => e
-        $log.error sprintf("%s: unable to execute API request: %s", __method__, e.message)
+        $log.error sprintf("%s: unable to execute API request: %s", __method__, self)
         $log.debug sprintf("%s: response: %s", __method__, parsed.inspect)
         raise e
       end
@@ -108,7 +126,7 @@ class Surveymonkey::Request
     #
 
     def to_s
-      self.method_name
+      sprintf("%s %s", self.api_method, self.method_params.inspect)
     end
 
 
@@ -172,6 +190,25 @@ class Surveymonkey::Request
         request_uri = sprintf("%s?api_key=%s", path, api_key)
         $log.debug(sprintf("%s: generated '%s'", __method__, request_uri))
         request_uri
+
+      rescue StandardError => e
+        $log.error(sprintf("%s: %s", __method__, e.message))
+        raise e
+      end
+    end
+
+    def _valid_response?(response) #:nodoc:
+      begin
+        code = response.code
+        $log.debug sprintf("%s: HTTP response code is %i", __method__, code)
+        # this claims to raise an exception if the response is not a 2XX
+        response.value
+
+        code
+
+      rescue Net::HTTPError => e
+        $log.error sprintf("%s: HTTP error: %s", __method__, e.message)
+        return nil
 
       rescue StandardError => e
         $log.error(sprintf("%s: %s", __method__, e.message))

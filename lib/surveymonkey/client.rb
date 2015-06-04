@@ -30,16 +30,15 @@ class Surveymonkey::Client
 
       self.class.logger $log, :debug
 
-      $log.debug(sprintf("%s: setting base_uri to '%s'\n", __method__, @baseuri))
+      $log.debug(sprintf("%s: setting base_uri to '%s'", __method__, @baseuri))
       self.class.base_uri @baseuri
 
-      $log.debug(sprintf("%s: setting headers'\n", __method__))
       http_headers = _http_headers(@access_token)
       self.class.headers http_headers
 
     rescue StandardError => e
-      $log.error(sprintf("%s: %s\n", __method__, e.message))
-      raise
+      $log.error(sprintf("%s: %s", __method__, e.message))
+      raise e
     end
   end
 
@@ -55,17 +54,17 @@ class Surveymonkey::Client
 
   def _http_headers(token) #:nodoc:
     begin
-      $log.debug(sprintf("%s: constructing http headers with token '%s'\n", __method__, token))
+      $log.debug(sprintf("%s: constructing http headers with token '%s'", __method__, token))
       http_headers = {
         "Content-Type" => "application/json",
         "Authorization" => sprintf("bearer %s", token),
       }
-      $log.debug(sprintf("%s: http headers: '%s'\n", __method__, http_headers))
+      $log.debug(sprintf("%s: http headers: '%s'", __method__, http_headers))
       http_headers
 
     rescue StandardError => e
-      $log.error(sprintf("%s: %s\n", __method__, e.message))
-      raise
+      $log.error(sprintf("%s: %s", __method__, e.message))
+      raise e
     end
   end
 
