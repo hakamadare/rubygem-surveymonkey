@@ -43,8 +43,7 @@ class Surveymonkey::Request
 
         response = self.client.class.send(http_method.to_sym, request_uri, body: self.method_params)
 
-        $log.debug(sprintf("%s: response class %s", __method__, response.class))
-        $log.debug(sprintf("%s: response code %i", __method__, response.code))
+        $log.debug(sprintf("%s: response class %s code %i", __method__, response.class, response.code))
         $log.debug(sprintf("%s: response headers '%s'", __method__, response.headers.inspect))
 
         if response.code == 403
