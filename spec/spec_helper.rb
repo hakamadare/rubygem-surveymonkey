@@ -5,3 +5,4 @@ ENV['SURVEYMONKEY_APIKEY'] = 'aaaaaabbbbbbccccccdddddd' unless ENV.member?('SURV
 ENV['SURVEYMONKEY_ACCESSTOKEN'] = 'aaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbb' unless ENV.member?('SURVEYMONKEY_ACCESSTOKEN')
 
 require 'surveymonkey'
+require 'pry'

@@ -30,7 +30,7 @@ class Surveymonkey::Error < StandardError
 
     rescue StandardError => e
       $log.error(sprintf("%s: unable to parse '%s' as error\n", __method__, error.inspect))
-      raise
+      raise e
     end
   end
 
