@@ -46,10 +46,6 @@ class Surveymonkey::Request
         $log.debug(sprintf("%s: response class %s code %i", __method__, response.class, response.code))
         $log.debug(sprintf("%s: response headers '%s'", __method__, response.headers.inspect))
 
-        if response.code == 403
-          binding.pry
-        end
-
         if _valid_response?(response)
           parsed = response.parsed_response
           status = parsed.fetch('status')
