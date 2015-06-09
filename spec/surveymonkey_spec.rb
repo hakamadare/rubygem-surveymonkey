@@ -60,7 +60,7 @@ end
 
 describe Surveymonkey::Request.new('get_survey_list').to_s do
   it { is_expected.to be_a_kind_of(String) }
-  it { is_expected.to eq('get_survey_list') }
+  it { is_expected.to eq('get_survey_list "{}"') }
 end
 
 describe Surveymonkey::API.new().api_method('get_survey_list') do
