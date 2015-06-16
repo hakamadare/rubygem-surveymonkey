@@ -21,9 +21,8 @@ class Surveymonkey::API::Method
       @method_name = method_name.to_s
 
       # validate the method
-      $log.debug(sprintf("%s:http_method: '%s'\n", __method__, http_method))
       the_method = http_method.to_s.downcase
-      $log.debug(sprintf("%s:the_method: '%s'\n", __method__, the_method))
+      $log.debug(sprintf("%s: the_method: '%s' (was '%s')", __method__, the_method, http_method))
 
       if the_method =~ /^(get|post|patch|put|delete|move|copy|head|options)$/
         @http_method = the_method
@@ -33,7 +32,7 @@ class Surveymonkey::API::Method
       end
 
     rescue StandardError => e
-      $log.error(sprintf("%s: unable to initialize API method: %s\n", __method__, e.message))
+      $log.error(sprintf("%s: unable to initialize API method: %s", __method__, e.message))
       raise
     end
   end

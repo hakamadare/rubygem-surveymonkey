@@ -28,37 +28,41 @@ class Surveymonkey::Request
       begin
         $log.debug(sprintf("%s: enter", __method__))
 
+        method_logname = sprintf("%s[%s]", __method__, api_method)
+
         self.method_params=(self.api.api_method_params(method_params))
         method_params = self.method_params
-        $log.debug(sprintf("%s: method_params: %s", __method__, method_params))
+        $log.debug(sprintf("%s: method_params: %s", method_logname, method_params))
 
         path = api_method.path
-        $log.debug(sprintf("%s: path: %s", __method__, path))
+        $log.debug(sprintf("%s: path: %s", method_logname, path))
 
         http_method = api_method.http_method
-        $log.debug(sprintf("%s: http_method: %s", __method__, http_method))
+        $log.debug(sprintf("%s: http_method: %s", method_logname, http_method))
 
         request_uri = _request_uri(path, api_key)
-        $log.debug(sprintf("%s: ready to make request for '%s'", __method__, api_method))
+        $log.debug(sprintf("%s: ready to make request for '%s'", method_logname, api_method))
 
         response = self.client.class.send(http_method.to_sym, request_uri, body: self.method_params)
 
-        $log.debug(sprintf("%s: response class %s code %i", __method__, response.class, response.code))
-        $log.debug(sprintf("%s: response headers '%s'", __method__, response.headers.inspect))
+        $log.debug(sprintf("%s: response class %s code %i", method_logname, response.class, response.code))
+        $log.debug(sprintf("%s: response headers '%s'", method_logname, response.headers.inspect))
 
         if _valid_response?(response)
           parsed = response.parsed_response
           status = parsed.fetch('status')
+          $log.debug(sprintf("%s: API returned status %i", method_logname, status))
 
           if status == 0
+            $log.debug(sprintf("%s: raw data: %s", method_logname, response.body.to_s))
+            $log.debug(sprintf("%s: parsed data: %s", method_logname, parsed.fetch('data', []).inspect))
             parsed
           else
-            $log.debug(sprintf("%s: API returned status %i", __method__, status))
             raise Surveymonkey::Error.new(parsed)
           end
 
         else
-          $log.error sprintf("%s: API returned invalid HTTP response code from '%s'", __method__, self)
+          $log.error sprintf("%s: API returned invalid HTTP response code from '%s'", method_logname, self)
 
           mashery_error_code  = $response.headers.fetch('x-mashery-error-code', 'UNKNOWN')
           error_detail_header = $response.headers.fetch('x-error-detail-header', 'Unknown')
@@ -71,8 +75,8 @@ class Surveymonkey::Request
         end
 
       rescue StandardError => e
-        $log.error sprintf("%s: unable to execute API request: %s", __method__, self)
-        $log.debug sprintf("%s: response: %s", __method__, parsed.inspect)
+        $log.error sprintf("%s: unable to execute API request: %s", method_logname, self)
+        $log.debug sprintf("%s: response: %s", method_logname, parsed.inspect)
         raise e
       end
     end

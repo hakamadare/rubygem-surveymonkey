@@ -29,7 +29,7 @@ class Surveymonkey::Error < StandardError
       @status_name  = _status_name(@status)
 
     rescue StandardError => e
-      $log.error(sprintf("%s: unable to parse '%s' as error\n", __method__, error.inspect))
+      $log.error(sprintf("%s: unable to parse '%s' as error", __method__, error.inspect))
       raise e
     end
   end
@@ -47,7 +47,7 @@ class Surveymonkey::Error < StandardError
     begin
       self.status_codes.fetch(error)
     rescue StandardError => e
-      $log.error(sprintf("%s: %i is not a valid error code\n", __method__, error))
+      $log.error(sprintf("%s: %i is not a valid error code", __method__, error))
       raise
     end
   end

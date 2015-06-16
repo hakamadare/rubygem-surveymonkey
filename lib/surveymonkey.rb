@@ -38,16 +38,16 @@ module Surveymonkey
 
     def method_missing(method_name, *args)
       begin
-        $log.debug sprintf("%s: %s\n", __method__, 'enter')
+        $log.debug sprintf("%s: %s", __method__, 'enter')
 
         the_args = Hash(Array(args).shift) || {}
 
         # extract page_size if passed in args
         page_size = the_args.delete('page_size') { |key| DefaultPageSize }.to_i
-        $log.debug sprintf("%s: page_size: %i\n", __method__, page_size)
+        $log.debug sprintf("%s: page_size: %i", __method__, page_size)
 
         method_params = the_args
-        $log.debug sprintf("%s: method_params: %s\n", __method__, method_params.inspect)
+        $log.debug sprintf("%s: method_params: %s", __method__, method_params.inspect)
 
         # is this a paginated method?
         pagination_field = PaginatedMethods.fetch(method_name, nil)
@@ -60,15 +60,15 @@ module Surveymonkey
         end
 
       rescue TypeError => e
-        $log.fatal sprintf("%s: method parameters must be a hash\n", __method__)
+        $log.fatal sprintf("%s: method parameters must be a hash", __method__)
         exit 1
 
       rescue KeyError => e
-        $log.fatal sprintf("%s: method '%s' not implemented\n", __method__, method_name.to_s)
+        $log.fatal sprintf("%s: method '%s' not implemented", __method__, method_name.to_s)
         exit 1
 
       rescue StandardError => e
-        $log.error sprintf("%s: %s\n", __method__, e.message)
+        $log.error sprintf("%s: %s", __method__, e.message)
         raise e
 
       end
@@ -124,7 +124,7 @@ module Surveymonkey
         raise e
 
       rescue StandardError => e
-        $log.error(sprintf("%s: %s\n", __method__, e.message))
+        $log.error(sprintf("%s: %s", __method__, e.message))
         raise e
 
       end
@@ -139,7 +139,7 @@ module Surveymonkey
         Surveymonkey::Request.new(method_name.to_s, {'method_params' => method_params}).execute
 
       rescue StandardError => e
-        $log.error sprintf("%s: %s\n", __method__, e.message)
+        $log.error sprintf("%s: %s", __method__, e.message)
         raise e
 
       end
