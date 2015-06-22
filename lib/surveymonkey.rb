@@ -30,6 +30,16 @@ module Surveymonkey
       :get_template_list   => 'templates',
     }
 
+    ##
+    # Method params that take DateStrings
+
+    DateStringParams = [
+      'start_date',
+      'end_date',
+      'start_modified_date',
+      'end_modified_date',
+    ]
+
     # Public methods
 
     ##
@@ -133,9 +143,9 @@ module Surveymonkey
 
     ##
     # Parse and validate DateStrings in method parameters
-    def parse_datestrings(method_params = {}) # :nodoc:
+    def parse_datestrings(method_params = {}, datestring_params = DateStringParams) # :nodoc:
       begin
-        ['start_date', 'end_date'].each do |date_param|
+        datestring_params.each do |date_param|
           if method_params.has_key?(date_param)
             raw = method_params.fetch(date_param)
             $log.debug(sprintf("%s: parsing '%s' as %s param", __method__, raw, date_param))
