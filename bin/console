@@ -2,9 +2,8 @@
 
 require "bundler/setup"
 
-# set API credentials in env
-ENV['SURVEYMONKEY_APIKEY'] = 'aaaaaabbbbbbccccccdddddd' unless ENV.member?('SURVEYMONKEY_APIKEY')
-ENV['SURVEYMONKEY_ACCESSTOKEN'] = 'aaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbbccccccddddddaaaaaabbbbbb' unless ENV.member?('SURVEYMONKEY_ACCESSTOKEN')
+require "dotenv"
+Dotenv.load
 
 require "surveymonkey"
 
