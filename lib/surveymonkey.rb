@@ -45,7 +45,7 @@ module Surveymonkey
     ##
     # Catch-all method; matches SurveyMonkey API method names.  Call like so:
     #  
-    #  Surveymonkey.get_user_details({'method_params' => {'foo' => 'bar'}})
+    #  Surveymonkey.get_user_details({'foo' => 'bar'})
 
     def method_missing(method_name, *args)
       begin
