@@ -15,7 +15,7 @@ class Surveymonkey::API
   Api_version = 'v2'
 
   ##
-  # Hash defining the methods in the SurveyMonkey API.  Current as of 2015-05-05.
+  # Hash defining the methods in the SurveyMonkey API.  Current as of 2015-12-14.
 
   Api_methods = {
     'create_flow' => {
@@ -50,6 +50,9 @@ class Surveymonkey::API
     },
     'get_user_details' => {
       'path' => '/v2/user/get_user_details',
+    },
+    'create_recipients' => {
+      'path' => '/v2/collectors/create_recipients',
     },
   }
 
