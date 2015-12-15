@@ -50,9 +50,9 @@ The SurveyMonkey API methods are documented [here](https://developer.surveymonke
     {"username"=>"XXXXXX", "is_paid_account"=>true, "is_enterprise_user"=>false}}}
 ```
 
-To pass parameters to an API method, pass a hash as the `method_params` parameter like so:
+To pass parameters to an API method, pass a hash like so:
 ```ruby
-[2] pry(main)> Surveymonkey.get_survey_list('method_params' => {"page_size" => 5, "order_asc" => true})
+[2] pry(main)> Surveymonkey.get_survey_list("page_size" => 5, "order_asc" => true)
 => {"status"=>0,
  "data"=>
   {"surveys"=>
