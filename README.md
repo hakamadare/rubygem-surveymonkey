@@ -34,11 +34,6 @@ $ export SURVEYMONKEY_APIKEY=XXXXXXXXXXX
 $ export SURVEYMONKEY_ACCESSTOKEN=YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 ```
 
-Alternately, you can pass them as arguments to `Surveymonkey::Client`, _e.g._
-```ruby
-sm = Surveymonkey::Client.new api_key: 'XXXXXXXXXXXX', access_token: 'YYYYYYYYYYYYYYYYYYYY'
-```
-
 ### API Methods
 
 The SurveyMonkey API methods are documented [here](https://developer.surveymonkey.com/), under "API Methods".  They are implemented as class methods, which you call like so:
@@ -88,3 +83,7 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+### Esteemed Contributors
+
+* @KazuyaMuroi
