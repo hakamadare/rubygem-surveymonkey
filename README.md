@@ -72,6 +72,7 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## To Do
 
+* implement support for API v3
 * validate API method parameters client-side rather than server-side
 * more unit tests
 * better exception handling
@@ -87,3 +88,4 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 ### Esteemed Contributors
 
 * @KazuyaMuroi
+* @cescue
