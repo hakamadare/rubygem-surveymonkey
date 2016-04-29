@@ -67,7 +67,7 @@ module Surveymonkey
           paginate_request(method_name, pagination_field, page_size, method_params)
         else
           $log.info sprintf("calling method '%s' without pagination", method_name)
-          Surveymonkey::Request.new(method_name.to_s, method_params).execute
+          execute_request(method_name, method_params)
         end
 
       rescue TypeError => e
