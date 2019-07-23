@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "deep_merge", "~> 1"
   spec.add_runtime_dependency "httparty", "~> 0.13"
-  spec.add_runtime_dependency "json", "~> 1.8"
+  spec.add_runtime_dependency "json", "~> 2.2"
   spec.add_runtime_dependency "logging", "~> 2"
   spec.add_runtime_dependency "timeliness", "~> 0.3"
 end
